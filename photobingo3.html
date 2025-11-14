@@ -66,6 +66,7 @@
 const SIZE = 4;
 let bingoData = [];
 
+// 指定キーワード（15個）、残り1つは空欄
 const defaultKeywords = [
     "きれいな景色",
     "おいしそうなもの",
@@ -82,9 +83,12 @@ const defaultKeywords = [
     "歴史を感じるもの",
     "なんとなーく色",
     "全体（広い）の景色",
-    ""
+    "" // 残りの1マスは自由入力
 ];
 
+/* -------------------------------
+   初期データ生成 or ロード
+-------------------------------- */
 function loadData() {
     const saved = localStorage.getItem("photoBingo4x4");
     if (saved) {
@@ -98,10 +102,16 @@ function loadData() {
     }
 }
 
+/* -------------------------------
+   データ保存
+-------------------------------- */
 function saveData() {
     localStorage.setItem("photoBingo4x4", JSON.stringify(bingoData));
 }
 
+/* -------------------------------
+   カード描画
+-------------------------------- */
 function render() {
     const board = document.getElementById("bingo");
     board.innerHTML = "";
@@ -110,6 +120,7 @@ function render() {
         const div = document.createElement("div");
         div.className = "cell" + (cell.completed ? " completed" : "");
 
+        // キーワード入力
         const input = document.createElement("input");
         input.type = "text";
         input.placeholder = "キーワード";
@@ -121,11 +132,13 @@ function render() {
         };
         div.appendChild(input);
 
+        // 画像プレビュー
         const img = document.createElement("img");
         img.className = "preview";
         img.src = cell.image || "";
         div.appendChild(img);
 
+        // 写真ボタン
         const photoInput = document.createElement("input");
         photoInput.type = "file";
         photoInput.accept = "image/*";
@@ -148,6 +161,7 @@ function render() {
         div.appendChild(photoBtn);
         div.appendChild(photoInput);
 
+        // 確認OK
         const okBtn = document.createElement("button");
         okBtn.textContent = "確認してOK";
         okBtn.className = "btn-small";
@@ -162,6 +176,9 @@ function render() {
     });
 }
 
+/* -------------------------------
+   エクスポート
+-------------------------------- */
 function exportData() {
     const blob = new Blob([JSON.stringify(bingoData)], { type: "application/json" });
     const a = document.createElement("a");
@@ -170,6 +187,9 @@ function exportData() {
     a.click();
 }
 
+/* -------------------------------
+   インポート
+-------------------------------- */
 function importData(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -184,6 +204,9 @@ function importData(event) {
     reader.readAsText(file);
 }
 
+/* -------------------------------
+   初期化
+-------------------------------- */
 loadData();
 render();
 </script>
